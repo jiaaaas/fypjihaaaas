@@ -40,17 +40,20 @@ class PerformanceReportController extends Controller
         if ($reportType === 'monthly') {
             $startDate = Carbon::create($year, $month, 1)->startOfMonth();
             $endDate = Carbon::create($year, $month, 1)->endOfMonth();
+            $totalDays = 30; // Fixed to 30 days for monthly report
         } else {
             $startDate = Carbon::create($year, 1, 1)->startOfYear();
             $endDate = Carbon::create($year, 12, 31)->endOfYear();
+            $totalDays = 365; // Fixed to 365 days for yearly report
         }
 
         $attendances = $query->whereBetween('created_at', [$startDate, $endDate])->get();
 
         // Calculate performance
-        $totalDays = $attendances->count();
-        $onTimeDays = $attendances->where('status', 'present')->count();
-        $performance = $totalDays > 0 ? ($onTimeDays / $totalDays) * 100 : 0;
+        $presentCount = $attendances->where('status', 'present')->count();
+        $absentCount = $attendances->where('status', 'absent')->count();
+        $lateCount = $attendances->where('status', 'late')->count();
+        $performance = $totalDays > 0 ? (($presentCount + $lateCount) / $totalDays) * 100 : 0;
 
         // Create a new attendance report
         $report = AttendanceReport::create([
@@ -59,11 +62,11 @@ class PerformanceReportController extends Controller
             'year' => $year,
             'month' => $month,
             'total_days' => $totalDays,
-            'on_time_days' => $onTimeDays,
+            'on_time_days' => $presentCount,
             'performance' => $performance,
         ]);
 
-        return view('performance_report.report', compact('attendances', 'performance', 'reportType', 'year', 'month', 'employeeId', 'report'));
+        return view('performance_report.report', compact('attendances', 'performance', 'reportType', 'year', 'month', 'employeeId', 'report', 'presentCount', 'absentCount', 'lateCount', 'totalDays'));
     }
 
     public function downloadPDF(Request $request)
@@ -89,17 +92,20 @@ class PerformanceReportController extends Controller
         if ($reportType === 'monthly') {
             $startDate = Carbon::create($year, $month, 1)->startOfMonth();
             $endDate = Carbon::create($year, $month, 1)->endOfMonth();
+            $totalDays = 30; // Fixed to 30 days for monthly report
         } else {
             $startDate = Carbon::create($year, 1, 1)->startOfYear();
             $endDate = Carbon::create($year, 12, 31)->endOfYear();
+            $totalDays = 365; // Fixed to 365 days for yearly report
         }
 
         $attendances = $query->whereBetween('created_at', [$startDate, $endDate])->get();
 
         // Calculate performance
-        $totalDays = $attendances->count();
-        $onTimeDays = $attendances->where('status', 'present')->count();
-        $performance = $totalDays > 0 ? ($onTimeDays / $totalDays) * 100 : 0;
+        $presentCount = $attendances->where('status', 'present')->count();
+        $absentCount = $attendances->where('status', 'absent')->count();
+        $lateCount = $attendances->where('status', 'late')->count();
+        $performance = $totalDays > 0 ? (($presentCount + $lateCount) / $totalDays) * 100 : 0;
 
         // Create a new attendance report
         $report = AttendanceReport::create([
@@ -108,11 +114,11 @@ class PerformanceReportController extends Controller
             'year' => $year,
             'month' => $month,
             'total_days' => $totalDays,
-            'on_time_days' => $onTimeDays,
+            'on_time_days' => $presentCount,
             'performance' => $performance,
         ]);
 
-        $pdf = Pdf::loadView('performance_report.pdf', compact('attendances', 'performance', 'reportType', 'year', 'month', 'employeeId', 'report'));
+        $pdf = Pdf::loadView('performance_report.pdf', compact('attendances', 'performance', 'reportType', 'year', 'month', 'employeeId', 'report', 'presentCount', 'absentCount', 'lateCount', 'totalDays'));
 
         return $pdf->download('performance_report.pdf');
     }

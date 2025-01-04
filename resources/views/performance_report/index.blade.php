@@ -20,23 +20,45 @@
                         </select>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="report_type" class="block text-sm font-medium text-gray-700">Report Type</label>
-                        <select name="report_type" id="report_type" class="form-control">
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
+                    <div class="flex justify-between mb-4">
+                        <div class="w-1/3 mr-2">
+                            <label for="report_type" class="block text-sm font-medium text-gray-700">Report Type</label>
+                            <select name="report_type" id="report_type" class="form-control">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="w-1/3 ml-2">
+                            <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
+                            <input type="number" name="year" id="year" class="form-control" value="{{ date('Y') }}">
+                        </div>
+                        <div class="w-1/3 ml-2" id="month-field">
+                            <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
+                            <select name="month" id="month" class="form-control">
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
+                    {{-- <div class="mb-4">
                         <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
                         <input type="number" name="year" id="year" class="form-control" value="{{ date('Y') }}">
-                    </div>
+                    </div> --}}
 
-                    <div class="mb-4" id="month-field">
+                    {{-- <div class="mb-4" id="month-field">
                         <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
                         <input type="number" name="month" id="month" class="form-control" value="{{ date('m') }}">
-                    </div>
+                    </div> --}}
+                    {{-- <div class="mb-4" id="month-field">
+                        <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
+                        <select name="month" id="month" class="form-control">
+                            @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div> --}}
 
                     <div class="mb-4">
                         <button type="submit" class="btn btn-primary">Generate Report</button>
@@ -50,9 +72,9 @@
     <script>
         document.getElementById('report_type').addEventListener('change', function() {
             if (this.value === 'yearly') {
-                document.getElementById('month-field').style.display = 'none';
+                document.getElementById('month').disabled = true;
             } else {
-                document.getElementById('month-field').style.display = 'block';
+                document.getElementById('month').disabled = false;
             }
         });
     </script>
