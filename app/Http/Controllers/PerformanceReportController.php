@@ -49,6 +49,17 @@ class PerformanceReportController extends Controller
 
         $attendances = $query->whereBetween('created_at', [$startDate, $endDate])->get();
 
+        // Update status based on scan time
+        foreach ($attendances as $attendance) {
+            $scanTime = Carbon::parse($attendance->created_at);
+            if ($scanTime->hour >= 9) {
+                $attendance->status = 'late';
+            } else {
+                $attendance->status = 'present';
+            }
+            $attendance->save();
+        }
+
         // Calculate performance
         $presentCount = $attendances->where('status', 'present')->count();
         $absentCount = $attendances->where('status', 'absent')->count();
@@ -100,6 +111,17 @@ class PerformanceReportController extends Controller
         }
 
         $attendances = $query->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        // Update status based on scan time
+        foreach ($attendances as $attendance) {
+            $scanTime = Carbon::parse($attendance->created_at);
+            if ($scanTime->hour >= 9) {
+                $attendance->status = 'late';
+            } else {
+                $attendance->status = 'present';
+            }
+            $attendance->save();
+        }
 
         // Calculate performance
         $presentCount = $attendances->where('status', 'present')->count();

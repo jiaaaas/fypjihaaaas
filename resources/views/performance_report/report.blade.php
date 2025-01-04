@@ -51,43 +51,115 @@
                     </div>
                 </div>
 
-                <div class="mt-4 mb-4" style="max-width: 400px; margin: auto; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
-                    <canvas id="attendanceChart"></canvas>
-                </div>
+                {{-- <!-- Performance Chart -->
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold mb-4">Performance Overview</h4>
+                    <canvas id="performanceChart" width="200" height="100"></canvas> <!-- Minimized size -->
+                </div> --}}
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Date</th>
-                                @if(!$employeeId)
-                                    <th>Employee Name</th>
-                                @endif
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($attendances as $attendance)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $attendance->created_at->format('d-m-Y') }}</td>
-                                @if(!$employeeId)
-                                    <td>{{ $attendance->employee->name }}</td>
-                                @endif
-                                <td>{{ ucfirst($attendance->status) }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="{{ $employeeId ? '3' : '4' }}" class="text-center">No data available</td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Attendance Status Tabs -->
+                <div class="mt-4 mb-4">
+                    <ul class="flex border-b">
+                        <li class="-mb-px mr-1">
+                            <a href="#present" class="bg-blue-500 text-white inline-block py-2 px-4 rounded-t-lg">Present</a>
+                        </li>
+                        <li class="-mb-px mr-1">
+                            <a href="#absent" class="bg-red-500 text-white inline-block py-2 px-4 rounded-t-lg">Absent</a>
+                        </li>
+                        <li class="-mb-px mr-1">
+                            <a href="#late" class="bg-yellow-500 text-white inline-block py-2 px-4 rounded-t-lg">Late</a>
+                        </li>
+                    </ul>
 
-                <div class="mt-4" style="max-width: 400px; margin: auto;">
-                    <canvas id="attendanceChart"></canvas>
+                    <!-- Tabs Content -->
+                    <div class="tab-content mt-4">
+                        <!-- Present Tab -->
+                        <div id="present" class="tab-pane">
+                            <h4 class="text-lg font-semibold">Present Employees</h4>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Date</th>
+                                        @if(!$employeeId)
+                                            <th>Employee Name</th>
+                                        @endif
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($attendances->where('status', 'present') as $attendance)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $attendance->created_at->format('d-m-Y H:i:s') }}</td>
+                                            @if(!$employeeId)
+                                                <td>{{ $attendance->employee->name }}</td>
+                                            @endif
+                                            <td>{{ ucfirst($attendance->status) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Absent Tab -->
+                        <div id="absent" class="tab-pane">
+                            <h4 class="text-lg font-semibold">Absent Employees</h4>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Date</th>
+                                        @if(!$employeeId)
+                                            <th>Employee Name</th>
+                                        @endif
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($attendances->where('status', 'absent') as $attendance)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $attendance->created_at->format('d-m-Y H:i:s') }}</td>
+                                            @if(!$employeeId)
+                                                <td>{{ $attendance->employee->name }}</td>
+                                            @endif
+                                            <td>{{ ucfirst($attendance->status) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Late Tab -->
+                        <div id="late" class="tab-pane">
+                            <h4 class="text-lg font-semibold">Late Employees</h4>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Date</th>
+                                        @if(!$employeeId)
+                                            <th>Employee Name</th>
+                                        @endif
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($attendances->where('status', 'late') as $attendance)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $attendance->created_at->format('d-m-Y H:i:s') }}</td>
+                                            @if(!$employeeId)
+                                                <td>{{ $attendance->employee->name }}</td>
+                                            @endif
+                                            <td>{{ ucfirst($attendance->status) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,42 +167,33 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script>
-        const ctx = document.getElementById('attendanceChart').getContext('2d');
-        const attendanceData = @json($attendances->map(function($attendance) {
-            return [
-                'date' => $attendance->created_at->format('d-m-Y'),
-                'status' => $attendance->status
-            ];
-        }));
-
-        const presentCount = attendanceData.filter(data => data.status === 'present').length;
-        const absentCount = attendanceData.filter(data => data.status === 'absent').length;
-        const lateCount = attendanceData.filter(data => data.status === 'late').length;
-
-        const data = {
-            labels: ['Present', 'Absent', 'Late'],
-            datasets: [{
-                label: 'Attendance Status',
-                data: [presentCount, absentCount, lateCount],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 206, 86, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
-                borderWidth: 1
-            }]
-        };
-
-        const config = {
-            type: 'pie',
-            data: data,
+    {{-- <script>
+        // Performance Chart Data
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'line', // Changed to line chart
+            data: {
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'], // Day labels (you can replace them with actual dates)
+                datasets: [{
+                    label: 'On Time',
+                    data: [{{ $presentCount }}, {{ $presentCount }}, {{ $presentCount }}, {{ $presentCount }}, {{ $presentCount }}, {{ $presentCount }}, {{ $presentCount }}], // Replace with actual values per day
+                    fill: false,
+                    borderColor: '#4CAF50',
+                    tension: 0.1
+                }, {
+                    label: 'Absent',
+                    data: [{{ $absentCount }}, {{ $absentCount }}, {{ $absentCount }}, {{ $absentCount }}, {{ $absentCount }}, {{ $absentCount }}, {{ $absentCount }}], // Replace with actual values per day
+                    fill: false,
+                    borderColor: '#F44336',
+                    tension: 0.1
+                }, {
+                    label: 'Late',
+                    data: [{{ $lateCount }}, {{ $lateCount }}, {{ $lateCount }}, {{ $lateCount }}, {{ $lateCount }}, {{ $lateCount }}, {{ $lateCount }}], // Replace with actual values per day
+                    fill: false,
+                    borderColor: '#FFEB3B',
+                    tension: 0.1
+                }]
+            },
             options: {
                 responsive: true,
                 plugins: {
@@ -140,24 +203,32 @@
                     tooltip: {
                         callbacks: {
                             label: function(tooltipItem) {
-                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' days';
                             }
                         }
-                    },
-                    datalabels: {
-                        formatter: (value, ctx) => {
-                            let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                            let percentage = (value * 100 / sum).toFixed(2) + "%";
-                            return percentage;
-                        },
-                        color: '#000000',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
             }
-        };
+        });
+    </script> --}}
+    <script>
+        // You can use a simple JavaScript function or AlpineJS to switch between tabs
+        document.querySelectorAll('.tab-pane').forEach(tab => tab.style.display = 'none');
+        document.getElementById('present').style.display = 'block';
 
-        Chart.register(ChartDataLabels);
-        const attendanceChart = new Chart(ctx, config);
+        document.querySelectorAll('.flex a').forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+                document.querySelectorAll('.tab-pane').forEach(tab => tab.style.display = 'none');
+                const tabId = tab.getAttribute('href').replace('#', '');
+                document.getElementById(tabId).style.display = 'block';
+            });
+        });
     </script>
     @endpush
 </x-app-layout>
