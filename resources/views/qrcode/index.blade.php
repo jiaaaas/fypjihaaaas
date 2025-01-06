@@ -27,7 +27,7 @@
 
     @push('scripts')
     <script>
-        let countdown = 5; // Initialize countdown timer
+        let countdown = 15; // Initialize countdown timer
 
         // Function to fetch and regenerate QR Code
         async function regenerateQRCode() {
@@ -44,7 +44,7 @@
                 document.getElementById('otp-display').innerText = data.otp;
 
                 // Reset the countdown timer
-                countdown = 5;
+                countdown = 15;
                 document.getElementById('countdown-timer').innerText = countdown;
 
                 // Restart the countdown

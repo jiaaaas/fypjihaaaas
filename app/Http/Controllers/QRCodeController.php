@@ -36,10 +36,10 @@ class QRCodeController extends Controller
     
         // Generate a new UUID every time this is called
         $uuid = Str::uuid();
-
+    
         // Generate a new QR code with OTP and the new UUID
-        $qrCode = QrCodeFacade::size(435)->generate(' OTP: ' . $otp . ' ID: ' . $uuid);
-        
+        $qrCode = QrCodeFacade::size(435)->generate('OTP: ' . $otp . ' ID: ' . $uuid)->toHtml();
+    
         QRCode::create([
             'otp' => $otp,
         ]);
@@ -50,5 +50,6 @@ class QRCodeController extends Controller
             'otp' => $otp,
         ]);
     }
+    
     
 }
