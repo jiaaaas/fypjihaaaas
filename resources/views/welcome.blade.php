@@ -19,14 +19,15 @@
     @endif
 </head>
 <body class="font-sans antialiased" style="background-color: #E9EFEC;">
-    <div class="bg-gray-50 text-black" style="background-color: #E9EFEC;">
-        <header class="shadow py-4" style="background-color: #265073">
-            <div class="container flex justify-between items-center">
+    <div class="bg-gray-50 text-black min-h-screen flex flex-col" style="background-color: #E9EFEC;">
+        <!-- Header -->
+        <header class="shadow py-4" style="background-color: #265073;">
+            <div class="container mx-auto px-4 flex flex-wrap justify-between items-center">
                 <div class="flex-1 text-left">
-                    <h1 class="text-2xl py-2 px-4" style="color: white">SMPR</h1>
+                    <h1 class="text-2xl py-2 px-4 text-white">SMPR</h1>
                 </div>
                 @if (Route::has('login'))
-                    <nav class="flex space-x-4 ml-auto" style="color: white">
+                    <nav class="flex flex-wrap space-x-4 ml-auto text-white text-sm">
                         @auth
                             <a href="{{ url('/dashboard') }}" class="hover:text-yellow-600 py-2 px-4 rounded">Dashboard</a>
                         @else
@@ -40,27 +41,23 @@
             </div>
         </header>
         
-        <br>
-        <main class="mt-6">
-            <div class="container flex flex-col items-center text-center">
-                <div class="flex-1 text-left px-8 py-6">
-                    <h1 class="text-4xl py-4 px-6" style="color: rgb(0, 0, 0)">Staff Management System with Performance Report Generator</h1>
-                </div>
+        <!-- Main Content -->
+        <main class="mt-6 flex-grow">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl py-4 px-6 text-black break-words">Staff Management System with Performance Report Generator</h1>
                 
                 <div class="flex justify-center mb-4">
-                    <img src="{{ asset('images/logoamtis.jpg') }}" alt="AMTIS SOLUTION" class="img-fluid max-w-[800px]"> 
+                    <img src="{{ asset('images/logoamtis.jpg') }}" alt="AMTIS SOLUTION" class="img-fluid max-w-full"> 
                 </div>
-                <br><br>
-                <div id="clock" class="clock text-7xl font-semibold"></div> 
+                
+                <div id="clock" class="clock text-7xl font-semibold"></div>
             </div>
         </main>
-        
 
-        <div class="mt-6">
+        <!-- Footer -->
         <footer class="py-4 text-center">
             <small>HAK CIPTA &copy; 2024 AMTIS SOLUTION SDN. BHD</small>
         </footer>
-        </div>
     </div>
 
     <script>
