@@ -12,7 +12,7 @@
                     @csrf
                     <div class="mb-4">
                         <label for="employee_id" class="block text-sm font-medium text-gray-700">Employee</label>
-                        <select name="employee_id" id="employee_id" class="form-control">
+                        <select name="employee_id" id="employee_id" class="form-control w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="">All Employees</option>
                             @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -20,48 +20,33 @@
                         </select>
                     </div>
 
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/3 mr-2">
+                    <div class="flex flex-wrap justify-between mb-4">
+                        <div class="w-full sm:w-1/3 mb-4">
                             <label for="report_type" class="block text-sm font-medium text-gray-700">Report Type</label>
-                            <select name="report_type" id="report_type" class="form-control">
+                            <select name="report_type" id="report_type" class="form-control w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="monthly">Monthly</option>
                                 <option value="yearly">Yearly</option>
                             </select>
                         </div>
-                        <div class="w-1/3 ml-2">
+                        <div class="w-full sm:w-1/3 mb-4">
                             <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-                            <input type="number" name="year" id="year" class="form-control" value="{{ date('Y') }}">
+                            <input type="number" name="year" id="year" class="form-control w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" value="{{ date('Y') }}">
                         </div>
-                        <div class="w-1/3 ml-2" id="month-field">
+                        <div class="w-full sm:w-1/3 mb-4" id="month-field">
                             <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
-                            <select name="month" id="month" class="form-control">
+                            <select name="month" id="month" class="form-control w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                                 @for ($i = 1; $i <= 12; $i++)
                                     <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>{{ $i }}</option>
                                 @endfor
                             </select>
                         </div>
                     </div>
-
-                    {{-- <div class="mb-4">
-                        <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-                        <input type="number" name="year" id="year" class="form-control" value="{{ date('Y') }}">
-                    </div> --}}
-
-                    {{-- <div class="mb-4" id="month-field">
-                        <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
-                        <input type="number" name="month" id="month" class="form-control" value="{{ date('m') }}">
-                    </div> --}}
-                    {{-- <div class="mb-4" id="month-field">
-                        <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
-                        <select name="month" id="month" class="form-control">
-                            @for ($i = 1; $i <= 12; $i++)
-                                <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div> --}}
+                    
 
                     <div class="mb-4">
-                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                        <button type="submit" class="btn btn-primary w-full md:w-auto bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            Generate Report
+                        </button>
                     </div>
                 </form>
             </div>

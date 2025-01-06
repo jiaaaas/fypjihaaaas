@@ -1,8 +1,8 @@
 <x-app-layout>
     @section('content')
     <div class="container-fluid">
-        <div class="row-md-8">
-            <div class="col-md-20 mx-auto">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-12">
                 <br>
                 @if (session('success'))
                 <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -15,15 +15,16 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Late Attendance Record</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                                <h5 class="card-title mb-2">Late Attendance Record</h5>
                             </div>
                             
+                            <!-- Search Form -->
                             <form action="{{ route('attendance.index') }}" method="GET" class="row g-3">
-                                <div class="col">
+                                <div class="col-md-4 col-sm-6">
                                     <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request()->input('name') }}">
                                 </div>
-                                <div class="col">
+                                <div class="col-md-4 col-sm-6">
                                     <input type="text" name="department" class="form-control" placeholder="Department" value="{{ request()->input('department') }}">
                                 </div>
 
@@ -38,10 +39,11 @@
                             </form>
                         </div>
 
+                        <!-- Attendance Table -->
                         <form action="{{ route('attendance.update') }}" method="POST">
                             @csrf
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <table class="table table-hover">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
                                     <thead class="table-primary">
                                         <tr>
                                             <th>No.</th>
@@ -65,17 +67,14 @@
                                         @endforeach
                                         @if ($employeesNotScanned->isEmpty())
                                         <tr>
-                                            <td colspan="6" class="text-center">All employees have scanned attendance today.</td>
+                                            <td colspan="5" class="text-center">All employees have scanned attendance today.</td>
                                         </tr>
                                         @endif
                                     </tbody>
                                 </table>
                             </div>
 
-                            {{-- <div class="d-flex justify-content-center mt-3">
-                                {{ $attendances->links() }}
-                            </div> --}}
-
+                            <!-- Update Button -->
                             @if ($employeesNotScanned->count())
                             <div class="text-end mt-3">
                                 <button type="submit" class="btn btn-primary btn-sm">Update Attendance</button>

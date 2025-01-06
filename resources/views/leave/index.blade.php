@@ -1,8 +1,8 @@
 <x-app-layout>
     @section('content')
     <div class="container-fluid">
-        <div class="row-md-8">
-            <div class="col-md-20 mx-auto">
+        <div class="row">
+            <div class="col-lg-20 col-md-12 mx-auto">
                 <br>
                 @if (session('success'))
                 <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -15,30 +15,31 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Leave Record</h5>
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-3 mb-md-0">Leave Record</h5>
                             </div>
 
-                            <form action="" method="GET" class="row g-3">
-                                <div class="col">
+                            <!-- Responsive Form -->
+                            <form action="" method="GET" class="row g-3 mb-4">
+                                <div class="col-12 col-md">
                                     <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request()->input('name') }}">
                                 </div>
-                                <div class="col">
+                                <div class="col-12 col-md">
                                     <input type="text" name="department" class="form-control" placeholder="Department" value="{{ request()->input('department') }}">
                                 </div>
-
-                                <div class="col-auto">
+                                <div class="col-12 col-md-auto">
                                     <button type="submit" class="btn btn-primary btn-sm">
                                         <i class="material-icons me-1">search</i>
                                     </button>
-                                    <a href="{{ route('attendance.index') }}" class="btn btn-warning btn-sm ms-2" title="{{ __('Reset') }}">
+                                    <a href="{{ route('attendance.index') }}" class="btn btn-warning ms-2 btn-sm" title="{{ __('Reset') }}">
                                         <i class="material-icons">refresh</i>
                                     </a>
                                 </div>
                             </form>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <!-- Responsive Table -->
+                        <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-primary">
                                     <tr>
@@ -57,21 +58,20 @@
                                         <td>{{ $leave->employee->name }}</td>
                                         <td>{{ \Carbon\Carbon::parse($leave->start_date)->format('d-m-Y') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($leave->end_date)->format('d-m-Y') }}</td>
-                                        {{-- <td>{{ ucfirst($leave->status) }}</td> --}}
                                         <td>
                                             @if ($leave->status == 'pending')
-                                                <span class="badge bg-warning">Pending</span>
+                                            <span class="badge bg-warning">Pending</span>
                                             @elseif ($leave->status == 'approved')
-                                                <span class="badge bg-success">Approved</span>
+                                            <span class="badge bg-success">Approved</span>
                                             @elseif ($leave->status == 'rejected')
-                                                <span class="badge bg-danger">Rejected</span>
+                                            <span class="badge bg-danger">Rejected</span>
                                             @endif
                                         </td>
                                         <td>
                                             <form action="{{ route('leave.updateStatus', $leave->id) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <select name="status" class="form-select" onchange="this.form.submit()">
+                                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                                                     <option value="pending" {{ $leave->status == 'pending' ? 'selected' : '' }}>Pending</option>
                                                     <option value="approved" {{ $leave->status == 'approved' ? 'selected' : '' }}>Approved</option>
                                                     <option value="rejected" {{ $leave->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -88,8 +88,9 @@
                             </table>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <div>{{ $leaves->links() }}</div>
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-center mt-3">
+                            {{ $leaves->links() }}
                         </div>
                     </div>
                 </div>

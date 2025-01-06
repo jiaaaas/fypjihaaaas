@@ -13,68 +13,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
-    // public function index()
-    // {
-    //     $today = Carbon::today();
-    
-    //     // Get IDs of employees with approved leave for today
-    //     $approvedLeaveEmployeeIds = Leave::where('status', 'approved')
-    //         ->whereDate('start_date', '<=', $today)
-    //         ->whereDate('end_date', '>=', $today)
-    //         ->pluck('employee_id')
-    //         ->toArray();
-
-    
-    //     // Get employees who haven't scanned attendance today, excluding approved leaves
-    //     $employeesNotScanned = Employee::whereDoesntHave('attendances', function ($query) use ($today) {
-    //         $query->whereDate('created_at', $today)
-    //               ->where('status', '!=', 'absent');
-    //     })->whereNotIn('id', $approvedLeaveEmployeeIds)->get();
-    
-    //     return view('attendance.index', compact('employeesNotScanned'));
-    // }
-
-    // public function index()
-    // {
-    //     $today = Carbon::today();
-    
-    //     // Get IDs of employees with approved leave for today
-    //     $approvedLeaveEmployeeIds = Leave::where('status', 'approved')
-    //         ->whereDate('start_date', '<=', $today)
-    //         ->whereDate('end_date', '>=', $today)
-    //         ->pluck('employee_id')
-    //         ->toArray();
-    
-    //     // Get employees who haven't scanned attendance today, excluding approved leaves
-    //     $employeesNotScanned = Employee::whereDoesntHave('attendances', function ($query) use ($today) {
-    //         $query->whereDate('created_at', $today)
-    //               ->where('status', '!=', 'absent');
-    //     })->whereNotIn('id', $approvedLeaveEmployeeIds)->get();
-    
-    //     return view('attendance.index', compact('employeesNotScanned'));
-    // }
-
-//     public function index()
-// {
-//     $today = Carbon::today();
-
-//     // Get employees who haven't scanned attendance today, excluding those with approved leave today
-//     $employeesNotScanned = Employee::whereDoesntHave('attendances', function ($query) use ($today) {
-//         $query->whereDate('created_at', $today)
-//               ->where('status', '!=', 'absent');
-//     })
-//     ->whereNotIn('id', function($query) use ($today) {
-//         $query->select('employee_id')
-//               ->from('leaves')
-//               ->where('status', 'approved')
-//               ->whereDate('start_date', '<=', $today)
-//               ->whereDate('end_date', '>=', $today);
-//     })
-//     ->get();
-
-//     return view('attendance.index', compact('employeesNotScanned'));
-// }
-
     public function index(Request $request)
     {
         // Get all employees who are not on leave between today's date and the end of the day
@@ -130,8 +68,9 @@ class AttendanceController extends Controller
 
     public function downloadPDF()
     {
-        $attendanceRecords = Attendance::with('employee')->get();  // Get your data
-        $pdf = Pdf::loadView('pdf.attendance', compact('aattendanceRecords'));  // Pass data to PDF view
+        $attendanceRecords = Attendance::with('employee')->get(); // Get your data
+        $pdf = Pdf::loadView('pdf.attendance', compact('attendanceRecords')); // Correct variable name in compact()
         return $pdf->download('attendance.pdf');
     }
+    
 }
