@@ -25,14 +25,46 @@ class DashboardController extends Controller
 
         $attendance = Attendance::where('employee_id', $request->employee_id)->count();
 
-        $late = Attendance::where('employee_id', $request->employee_id)->where('status', 'late')->count();
+        $late = Attendance::where('employee_id', $request->employee_id)
+            ->where('status', 'late')
+            ->whereYear('created_at', now()->year)
+            ->count();
+
         $present = Attendance::where('employee_id', $request->employee_id)->where('status', 'present')->count();
+        
+        $absent = Attendance::where('employee_id', $request->employee_id)
+            ->where('status', 'absent')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->whereTime('created_at', '>', '12:00:00')
+            ->count();
+
+        $daysInMonth = now()->daysInMonth;
+        $absentDates = [];
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = now()->startOfMonth()->addDays($day - 1)->toDateString();
+            $attendanceExists = Attendance::where('employee_id', $request->employee_id)
+            ->whereDate('created_at', $date)
+            ->exists();
+
+            if (!$attendanceExists) {
+            $absentDates[] = $date;
+            Attendance::create([
+                'employee_id' => $request->employee_id,
+                'status' => 'absent',
+                'created_at' => $date . ' 00:00:00',
+            ]);
+            }
+        }
+
+        $absent += count($absentDates);
 
         return response()->json([
-            'no. of attendance' => $attendance,
+            // 'no. of attendance' => $attendance,
             'no. of late' => $late,
             'no. of present' => $present,
-            'no. of absent' => $attendance - $present - $late,
+            'no. of absent' => $absent,
         ]);}
 
 }
