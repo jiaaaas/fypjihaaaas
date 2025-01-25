@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class Attendance extends Model
 {
@@ -12,7 +12,7 @@ class Attendance extends Model
     use SoftDeletes; 
 
     
-    protected $fillable = ['employee_id', 'scanned', 'status'];
+    protected $fillable = ['employee_id', 'created_at', 'scanned', 'status'];
 
 
     public function employee()

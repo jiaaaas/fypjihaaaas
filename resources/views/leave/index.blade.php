@@ -45,6 +45,7 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Name</th>
+                                        <th>Leave Type</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Status</th>
@@ -56,6 +57,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration + ($leaves->currentPage() - 1) * $leaves->perPage() }}</td>
                                         <td>{{ $leave->employee->name }}</td>
+                                        <td>{{ $leave->leave_type }}</td>
                                         <td>{{ \Carbon\Carbon::parse($leave->start_date)->format('d-m-Y') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($leave->end_date)->format('d-m-Y') }}</td>
                                         <td>

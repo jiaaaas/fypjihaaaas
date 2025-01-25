@@ -18,12 +18,7 @@ class DashboardController extends Controller
             'employee_id' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-
-
-        $attendance = Attendance::where('employee_id', $request->employee_id)->count();
+        // $attendance = Attendance::where('employee_id', $request->employee_id)->count();
 
         $late = Attendance::where('employee_id', $request->employee_id)
             ->where('status', 'late')
@@ -36,7 +31,6 @@ class DashboardController extends Controller
             ->where('status', 'absent')
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
-            ->whereTime('created_at', '>', '12:00:00')
             ->count();
 
         $daysInMonth = now()->daysInMonth;
@@ -45,27 +39,45 @@ class DashboardController extends Controller
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $date = now()->startOfMonth()->addDays($day - 1)->toDateString();
             $attendanceExists = Attendance::where('employee_id', $request->employee_id)
-            ->whereDate('created_at', $date)
-            ->exists();
+                ->whereDate('created_at', $date)
+                ->exists();
 
             if (!$attendanceExists) {
-            $absentDates[] = $date;
-            Attendance::create([
-                'employee_id' => $request->employee_id,
-                'status' => 'absent',
-                'created_at' => $date . ' 00:00:00',
-            ]);
+                $absentDates[] = $date;
+                Attendance::create([
+                    'employee_id' => $request->employee_id,
+                    'status' => 'absent',
+                    'created_at' => $date . ' 00:00:00',
+                ]);
             }
         }
 
         $absent += count($absentDates);
 
+        // Retrieve absent data for the month
+        $absentData = Attendance::where('employee_id', $request->employee_id)
+            ->where('status', 'absent')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        $attendance = Attendance::where('employee_id', $request->employee_id)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        // Calculate the monthly attendance percentage
+        $totalDays = $daysInMonth;
+        $presentDays = $attendance - $absentData;
+        $attendancePercentage = number_format(($presentDays / $totalDays) * 100, 2);
+
         return response()->json([
-            // 'no. of attendance' => $attendance,
             'no. of late' => $late,
-            'no. of present' => $present,
-            'no. of absent' => $absent,
-        ]);}
+            // 'no. of present' => $present,
+            'no. of absent' => $absentData,
+            'attendance percentage' => $attendancePercentage,
+        ]);
+    }
 
 }
     
