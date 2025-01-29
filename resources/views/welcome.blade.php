@@ -44,7 +44,7 @@
         <!-- Main Content -->
         <main class="mt-6 flex-grow">
             <div class="container mx-auto px-4 text-center">
-                <h1 class="text-4xl py-4 px-6 text-black break-words">Staff Management System with Performance Report Generator</h1>
+                <h1 class="text-4xl py-4 px-6 text-black break-words mt-10">Staff Management System with Performance Report Generator</h1>
                 
                 <div class="flex justify-center mb-4">
                     <img src="{{ asset('images/logoamtis.jpg') }}" alt="AMTIS SOLUTION" class="img-fluid max-w-full"> 
