@@ -38,7 +38,7 @@ public function leave_form(Request $request)
         'start_date' => 'required|date|after_or_equal:today',
         'end_date' => 'required|date|after_or_equal:start_date',
         'leave_type' => 'required|string|max:255',
-        'reasons' => 'required|string',
+        'leave_reasons' => 'required|string',
         'employee_id' => 'required',
     ]);
 
@@ -53,7 +53,7 @@ public function leave_form(Request $request)
         'start_date' => $request->start_date,
         'end_date' => $request->end_date,
         'leave_type' => $request->leave_type,
-        'reasons' => $request->leave_reasons,
+        'leave_reasons' => json_encode($request->leave_reasons), // Encode leave_reasons as JSON
         'status' => 'pending', // Default status for a new leave application
     ]);
 
