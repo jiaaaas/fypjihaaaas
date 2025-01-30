@@ -70,8 +70,15 @@
 
                                 <div class="col-md-6 col-12 mb-3">
                                     <div class="form-group">
-                                        <label class="form-label" for="password">{{ __('Password') }}</label>
-                                        <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Password') }}" name="password">
+                                        <label class="form-label" for="password">{{ __('Password') }}</label> 
+                                        <div class="input-group">
+                                            <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Password') }}" name="password">
+                                            {{-- <div class="input-group-append" style="margin: 3px;">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div> --}}
+                                        </div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -140,6 +147,15 @@
     document.addEventListener("DOMContentLoaded", () => {
 
     });
+    </script>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function (e) {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
     </script>
     @endsection
     </x-app-layout>

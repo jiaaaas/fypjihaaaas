@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 
+use App\Models\User;
 use App\Models\Leave;
 use App\Models\Employee;
 use App\Models\Attendance;
@@ -34,12 +35,12 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $employees = Employee::inRandomOrder()->first();
+        // $employees = Employee::inRandomOrder()->first();
         $statusWorks = StatusWork::all();
         $departments = Department::all();
 
 
-        return view('employee.create', compact('employees', 'statusWorks', 'departments'));
+        return view('employee.create', compact('statusWorks', 'departments'));
     }
 
     /**
@@ -57,16 +58,23 @@ class EmployeeController extends Controller
             'password' => 'required|string|min:8',
         ]);
         
-        if (empty($validated['password'])) {
-            $validated['password'] = Hash::make('password');
-        } else {
-            $validated['password'] = Hash::make($validated['password']);
-        }
-
-        Employee::create($validated);
+        $validated['password'] = Hash::make($validated['password']);
+        
+        // Create the employee record
+        $employee = Employee::create($validated);
+    
+        // Create the user record and link the employee_id to the employee's ID
+        $user = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')), // Ensure password is hashed
+            'employee_id' => $employee->id, // Set the employee_id from the created employee
+        ]);
     
         return to_route('employee.index')->withSuccess(__('Employee').' '.__('Successfully').' '.__('Added'));
     }
+    
+    
 
     /**
      * Display the specified resource.
@@ -95,7 +103,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $employees = Employee::findOrFail($id);
+        $employee = Employee::findOrFail($id);
      
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -105,30 +113,44 @@ class EmployeeController extends Controller
             'status_work_id' => 'required',
             'department_id' => 'required',
             'password' => 'nullable|string|min:8',
-
         ]);
-        
+    
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
-
-        $employees->update($validated);
-
+    
+        $employee->update($validated);
+    
+        // Update the user linked to the employee
+        $user = User::where('employee_id', $employee->id)->first();
+        if ($user) {
+            $user->update([
+                'name' => $employee->name,
+                'email' => $employee->email,
+                'password' => $employee->password ?? $user->password,
+            ]);
+        }
+    
         return redirect(route('employee.index'))->withSuccess(__('Employee').' '.__('Successfully').' '.__('Updated'));
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $employees = Employee::findOrFail($id);
-        $employees->delete();
-
+        $employee = Employee::findOrFail($id);
+        $employee->delete();
+    
+        // Remove the user linked to the employee
+        User::where('employee_id', $employee->id)->delete();
+    
         return redirect(route('employee.index'))->withSuccess(__('Employee').' '.__('Successfully').' '.__('Deleted')); 
     }
+    
 
 
     public function dashboard(Request $request)
