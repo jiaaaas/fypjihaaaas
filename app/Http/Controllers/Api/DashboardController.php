@@ -26,10 +26,11 @@ class DashboardController extends Controller
 
         $late = Attendance::where('employee_id', $request->employee_id)
             ->where('status', 'late')
+            ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
-        $present = Attendance::where('employee_id', $request->employee_id)->where('status', 'present')->count();
+        // $present = Attendance::where('employee_id', $request->employee_id)->where('status', 'present')->count();
         
         $absent = Attendance::where('employee_id', $request->employee_id)
             ->where('status', 'absent')
