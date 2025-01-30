@@ -10,7 +10,7 @@ class Employee extends Model
 
     // use HasFactory;
 
-    protected $fillable = ['name', 'phone_no', 'email', 'address', 'status_work_id', 'department_id'];
+    protected $fillable = ['name', 'phone_no', 'email', 'address', 'status_work_id', 'department_id', 'password'];
 
     public function statusWork()
     {
@@ -48,11 +48,7 @@ class Employee extends Model
            
         $query->when($filters['address'] ?? false, function($query, $filter){
             $query->where('address', 'like', "%$filter%");
-        });        
-        // $query->when($filters['status_work_id'] ?? false, function($query, $filter) {
-        //     $query->where('status_work_id', $filter);
-        // });
-        
+        });                
         $query->when($filters['status_work_id'] ?? false, function($query, $filter) {
             $query->whereHas('statusWork', function($query) use ($filter) {
                 $query->where('name', $filter);

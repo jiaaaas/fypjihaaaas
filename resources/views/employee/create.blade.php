@@ -67,6 +67,18 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <div class="col-md-6 col-12 mb-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="password">{{ __('Password') }}</label>
+                                        <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Password') }}" name="password">
+                                        @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
     
                                 <div class="col-md-6 col-12 mb-3">
                                     <div class="form-group">
@@ -126,7 +138,7 @@
     <script src="{{ asset('tabler/dist/libs/dropzone/dist/dropzone-min.js?1684106062') }}" defer></script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // You can add additional JavaScript if necessary
+
     });
     </script>
     @endsection

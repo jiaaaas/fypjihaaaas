@@ -11,6 +11,7 @@ use App\Models\Department;
 use App\Models\StatusWork;
 use Illuminate\Http\Request;
 use App\Mail\LateScanNotification;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class EmployeeController extends Controller
@@ -53,9 +54,15 @@ class EmployeeController extends Controller
             'address' => 'required',
             'status_work_id' => 'required',
             'department_id' => 'required',
+            'password' => 'required|string|min:8',
         ]);
         
-    
+        if (empty($validated['password'])) {
+            $validated['password'] = Hash::make('password');
+        } else {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
         Employee::create($validated);
     
         return to_route('employee.index')->withSuccess(__('Employee').' '.__('Successfully').' '.__('Added'));
@@ -76,9 +83,9 @@ class EmployeeController extends Controller
      */
     public function edit(string $id)
     {
-        $employees = Employee::findOrFail($id); // Fetch the employee
-        $departments = Department::all(); // Assuming you have a Department model
-        $statusWorks = StatusWork::all(); // Assuming you have a StatusWork model
+        $employees = Employee::findOrFail($id); 
+        $departments = Department::all(); 
+        $statusWorks = StatusWork::all(); 
     
         return view('employee.edit', compact('employees', 'departments', 'statusWorks'));
     }
@@ -97,8 +104,15 @@ class EmployeeController extends Controller
             'address' => 'required',
             'status_work_id' => 'required',
             'department_id' => 'required',
+            'password' => 'nullable|string|min:8',
+
         ]);
         
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $employees->update($validated);
 

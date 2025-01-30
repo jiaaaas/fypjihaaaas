@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -35,12 +36,12 @@ class AuthController extends Controller
 
     if ($response->successful()) {
     $token = $response->json();
-    $user = User::where('email', $request->username)->first();
+    $employee = Employee::where('email', $request->email)->first();
 
     return response()->json([
-    'id' => $user->id,
-    'name' => $user->name,
-    'email' => $user->email,
+    'id' => $employee->id,
+    'name' => $employee->name,
+    'email' => $employee->email,
     'token_type' => $token['token_type'],
     'expires_in' => $token['expires_in'],
     'access_token' => $token['access_token'],
