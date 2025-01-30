@@ -72,10 +72,10 @@ class DashboardController extends Controller
         $attendancePercentage = number_format(($presentDays / $totalDays) * 100, 2);
 
         return response()->json([
-            'no. of late' => $late,
+            'no_of_late' => $late,
             // 'no. of present' => $present,
-            'no. of absent' => $absentData,
-            'attendance percentage' => $attendancePercentage,
+            'no_of_absent' => $absentData,
+            'attendance_percentage' => $attendancePercentage,
         ]);
     }
 
