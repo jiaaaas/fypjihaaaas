@@ -79,7 +79,7 @@ class DashboardController extends Controller
         return response()->json([
             'no_of_late' => $late,
             // 'no. of present' => $present,
-            'no_of_absent' => $absentData,
+            'no_of_absent' => $absent,
             'attendance_percentage' => $attendancePercentage,
         ]);
     }
