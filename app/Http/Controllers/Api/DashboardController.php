@@ -18,6 +18,10 @@ class DashboardController extends Controller
             'employee_id' => 'required',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+
         // $attendance = Attendance::where('employee_id', $request->employee_id)->count();
 
         $late = Attendance::where('employee_id', $request->employee_id)
@@ -69,7 +73,7 @@ class DashboardController extends Controller
         // Calculate the monthly attendance percentage
         $totalDays = $daysInMonth;
         $presentDays = $attendance - $absentData;
-        $attendancePercentage = number_format(($presentDays / $totalDays) * 100, 2);
+        $attendancePercentage = number_format(($presentDays / $totalDays) * 100);
 
         return response()->json([
             'no_of_late' => $late,
