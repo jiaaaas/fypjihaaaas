@@ -78,10 +78,16 @@
                                 </tbody>
                             </table>
                         </div>
-    
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $users->links() }}
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
+                            </div>
+                            <div>
+                                {{ $users->links() }}
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>

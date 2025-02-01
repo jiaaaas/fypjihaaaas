@@ -104,8 +104,13 @@
                             </table>
                         </div>
 
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $employees->links() }}
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                Showing {{ $employees->firstItem() }} to {{ $employees->lastItem() }} of {{ $employees->total() }} entries
+                            </div>
+                            <div>
+                                {{ $employees->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

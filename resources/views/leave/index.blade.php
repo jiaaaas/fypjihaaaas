@@ -90,10 +90,16 @@
                             </table>
                         </div>
 
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $leaves->links() }}
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                Showing {{ $leaves->firstItem() }} to {{ $leaves->lastItem() }} of {{ $leaves->total() }} entries
+                            </div>
+                            <div>
+                                {{ $leaves->links() }}
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
